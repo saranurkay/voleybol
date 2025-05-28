@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Volleyball Court</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .court-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 600px;
+      background-color: #4CAF50;
+      border: 2px solid black;
+    }
+
+    .court-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: black;
+    }
+
+    .net {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .attack-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: black;
+    }
+
+    .attack-line-top {
+      top: 30%;
+    }
+
+    .attack-line-bottom {
+      bottom: 30%;
+    }
+
+    .file {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.2);
+      z-index: 5;
+      background-image: url('file.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .player {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      position: absolute;
+      cursor: grab;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      border: 2px solid black;
+      z-index: 10;
+    }
+
+    .player1 { background-color: red; }
+    .player2 { background-color: blue; }
+    .player3 { background-color: purple; }
+    .player4 { background-color: purple; }
+    .player5 { background-color: blue; }
+    .player6 { background-color: red; }
+    .player7 { background-color: purple; }
+    .player8 { background-color: blue; }
+    .player9 { background-color: red; }
+    .player10 { background-color: red; }
+    .player11 { background-color: blue; }
+    .player12 { background-color: purple; }
+
+    .ball {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(45deg, yellow 50%, navy 50%);
+      border: 2px solid black;
+      cursor: grab;
+      z-index: 15;
+    }
+  </style>
+</head>
+<body>
+  <div class="court-container">
+    <div class="court-line net"></div>
+    <div class="court-line attack-line attack-line-top"></div>
+    <div class="court-line attack-line attack-line-bottom"></div>
+    <div class="file"></div>
+    <div class="ball"></div>
+
+    <!-- Top team -->
+    <div class="player player1" style="top: 20%; left: 20%;">P</div>
+    <div class="player player2" style="top: 20%; left: 50%;">O</div>
+    <div class="player player3" style="top: 20%; left: 80%;">K</div>
+    <div class="player player4" style="top: 40%; left: 20%;">K</div>
+    <div class="player player5" style="top: 40%; left: 50%;">O</div>
+    <div class="player player6" style="top: 40%; left: 80%;">PÇ</div>
+
+    <!-- Bottom team -->
+    <div class="player player7" style="bottom: 20%; left: 20%;">K</div>
+    <div class="player player8" style="bottom: 20%; left: 50%;">O</div>
+    <div class="player player9" style="bottom: 20%; left: 80%;">P</div>
+    <div class="player player10" style="bottom: 40%; left: 20%;">PÇ</div>
+    <div class="player player11" style="bottom: 40%; left: 50%;">O</div>
+    <div class="player player12" style="bottom: 40%; left: 80%;">K</div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.player, .ball').forEach(element => {
+      let isDragging = false;
+      let startX, startY;
+
+      function getEvent(e) {
+        return e.type.startsWith('mouse') ? e : e.touches[0];
+      }
+
+      function dragStart(e) {
+        isDragging = true;
+        const event = getEvent(e);
+        startX = event.clientX - element.offsetLeft;
+        startY = event.clientY - element.offsetTop;
+        e.preventDefault();
+      }
+
+      function drag(e) {
+        if (!isDragging) return;
+        const event = getEvent(e);
+        const newX = event.clientX - startX;
+        const newY = event.clientY - startY;
+
+        const court = document.querySelector('.court-container');
+        const maxX = court.offsetWidth - element.offsetWidth + 50;
+        const maxY = court.offsetHeight - element.offsetHeight + 50;
+
+        element.style.left = `${Math.max(-50, Math.min(maxX, newX))}px`;
+        element.style.top = `${Math.max(-50, Math.min(maxY, newY))}px`;
+
+        e.preventDefault();
+      }
+
+      function dragEnd() {
+        isDragging = false;
+      }
+
+      element.addEventListener('mousedown', dragStart);
+      element.addEventListener('mousemove', drag);
+      element.addEventListener('mouseup', dragEnd);
+
+      element.addEventListener('touchstart', dragStart, { passive: false });
+      element.addEventListener('touchmove', drag, { passive: false });
+      element.addEventListener('touchend', dragEnd);
+    });
+  </script>
+</body>
+</html>
